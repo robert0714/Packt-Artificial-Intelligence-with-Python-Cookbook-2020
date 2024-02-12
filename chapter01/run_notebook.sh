@@ -37,15 +37,16 @@ c.NotebookApp.tornado_settings = {'kernel_info_timeout': 60}
 EOF
 chown -R $USER:$USER .jupyter
 su $USER -c "jupyter notebook"
-Then build your container and run it:
+# Then build your container and run it:
 docker build -t jupyter .
-Once that's finished you can run your container like this:
-PORT=5050 docker run -d \
---runtime=nvidia \ # optionally: if you rely on the nvidia docker binaries
+# Once that's finished you can run your container like this: PORT=5050 
+# --runtime=nvidia -> optionally: if you rely on the nvidia docker binaries
+PORT=8888 
+docker run -d \
 --name "jupyter_${USER}_${PORT}" \
--p $PORT:9999 \ 
--e USER=$USER \ 
--e USERGID=$(id -g $1) \ 
--e USERID=$(id -u $1) \ 
--e PASS=$PASS jupyter \ 
-/usr/local/bin/run_notebook.sh
+-p $PORT:8888 \
+-e USER=$USER \
+-e USERGID=$(id -g $1) \
+-e USERID=$(id -u $1) \
+-e PASS=$PASS  \
+jupyter 

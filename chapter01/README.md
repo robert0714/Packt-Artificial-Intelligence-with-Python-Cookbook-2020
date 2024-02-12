@@ -47,7 +47,7 @@ dependencies:
    - scipy==1.2.0
 prefix: /opt/conda/envs/env
 ```
-
+The image is about 7.5 GB.
 ## run_notebook.sh
 ```bash
 #!/bin/bash
@@ -104,3 +104,73 @@ PORT=5050 docker run -d \
 ```
 
 You can add mount parameters to the run command with the -v option. This is useful if you want the docker container to share directories with the host machine. Otherwise, you can copy files using the docker-copy command
+```bash
+docker run -it --rm --net=host jupyter
+```
+http://localhost:8888/?token=061339d41dbf982da6286fb1517a84d872156fcfd083d0ed
+
+> ## Python virtual environment .
+> ### Install 
+> ```bash
+> $ pip3 install virtualenv virtualenvwrapper
+> ```
+> Add the environment variable ``~/.bashrc`` 
+> ```bash
+> #######################################################
+> export WORKON_HOME=$HOME/.virtualenv_container
+> # virtualenv env path
+> 
+> export VIRTUALENVWRAPPER_PYTHON=XXXX 
+> # XXX is Python3 location path，use command -> "$ which python3"  to find it (/usr/bin/python3)
+> 
+> 
+> source XXX 
+> # XXX -> "$ which virtualenvwrapper.sh" to find the location path
+> # ex: /home/someone/.local/bin/virtualenvwrapper.sh
+> ####################################################### 
+> ```
+>  
+> ##### Usage 
+> ```bash
+> $ mkvirtualenv <virtualenv NAME>
+> # Create Virtualenv env
+> # ex: mkvirtualenv tset1
+> # ex: mkvirtualenv -p /usr/local/python36/bin/python3.6 tset2
+> 
+> $ cpvirtualenv <source virtualenv NAME> <new virtualenv NAME>
+> # Copy Virtualenv env
+> 
+> $ rmvirtualenv <To remove virtualenv NAME>
+> # Delete Virtualenv env
+> 
+> $ lsvirtualenv
+> # Search Virtualenv env
+> 
+> $ workon <To load virtualenv NAME>
+> # To use Virtualenv env
+> # ex: workon test1 
+> 
+> $ deactivate
+> # Escape Virtualenv env
+> ```
+
+# Jupyter Docker Stacks
+* https://jupyter-docker-stacks.readthedocs.io/en/latest/
+* https://github.com/jupyter/docker-stacks/tree/main/images/scipy-notebook
+```
+docker run -p 10000:8888 quay.io/jupyter/scipy-notebook:2024-01-15
+
+docker run -it --rm -p 10000:8888 -v "${PWD}":/home/jovyan/work quay.io/jupyter/datascience-notebook:2024-01-15
+```
+
+http://10.100.198.102:10000/
+
+We use old image: https://jupyter-docker-stacks.readthedocs.io/en/latest/#using-old-images
+* https://github.com/jupyter/docker-stacks/tree/main/images/datascience-notebook
+``` 
+docker run -it --rm -p 10000:8888 -v "${PWD}":/home/jovyan/work quay.io/jupyter/datascience-notebook:b86753318aa1
+```
+
+http://10.100.198.102:10000/
+
+# Podman Machine Cli

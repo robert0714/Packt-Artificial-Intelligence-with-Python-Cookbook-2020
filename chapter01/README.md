@@ -174,3 +174,12 @@ docker run -it --rm -p 10000:8888 -v "${PWD}":/home/jovyan/work quay.io/jupyter/
 http://10.100.198.102:10000/
 
 # Podman Machine Cli
+## for winodws
+* Install windows wsl2
+```powershell
+wsl --install --no-distribution
+```
+* Install podman-cli
+```powershell
+choco install -y podman-cli
+```

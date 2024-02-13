@@ -9,7 +9,31 @@ You can add mount parameters to the run command with the -v option. This is usef
 ```bash
 docker run -it --rm --net=host jupyter
 ```
+## In Conda
+```bash
+pip install  keyboard  opencv-contrib-python scipy  imutils scikit-image
+```
+### Issue 1 : Javascript Error: IPython is not defined
+* https://stackoverflow.com/questions/51922480/javascript-error-ipython-is-not-defined-in-jupyterlab
+```
+conda install -c conda-forge ipympl
+conda install -c conda-forge matplotlib
+jupyter lab build
+conda install -c conda-forge nodejs
+conda install -c conda-forge tensorflow
+```
+* Try the below:
+```python
+%matplotlib notebook
+%matplotlib widget
+%matplotlib inline
 
+```
+### Issue 2 : You need to install Visual Studio for C++
+* https://bobbyhadz.com/blog/error-microsoft-visual-c-14-0-or-greater-is-required
+```poweshell
+choco install -y visualcpp-build-tools visualstudio2022buildtools
+```
 
 # Jupyter Docker Stacks
 * https://jupyter-docker-stacks.readthedocs.io/en/latest/
@@ -352,3 +376,86 @@ Some other libraries used or mentioned in this recipe include the following:
 * Ray: http://ray.readthedocs.io/en/latest/rllib.html
 * joblib: https://joblib.readthedocs.io/en/latest/
 * Classifying in scikit-lea
+
+
+
+# yolov3
+* https://pjreddie.com/darknet/yolo/
+```bash
+wget https://pjreddie.com/media/files/yolov3.weights
+```
+
+# Darknet YOLO
+* https://sourceforge.net/projects/darknet-yolo.mirror/
+
+
+# Reference about Object detection by Web Camera 
+* https://opencv-python-tutroals.readthedocs.io/en/latest/#
+* https://github.com/diewland/python-video-playground/
+* https://gist.github.com/vereperrot/e4b49a35fed3d0f47e54ff7b53b769db
+
+# How it works...
+We've implemented an object detection algorithm with Keras. This came out of the box with a standard library, but we connected it to a camera and applied it to an example image.
+
+The main algorithms in terms of image detection are the following:
+
+* Fast R-CNN (Ross Girshick, 2015)
+* Single Shot MultiBox Detector (SSD); Liu and others, 2015: https://arxiv.org/abs/1512.02325)
+* You Only Look Once (YOLO); Joseph Redmon and others, 2016: https://arxiv.org/abs/1506.02640)
+* YOLOv4 (Alexey Bochkovskiy and others, 2020: https://arxiv.org/abs/2004.10934)
+
+One of the main requirements of object detection is speed – you don't want to wait to hit the tree before recognizing it.
+
+Image detection is based on image recognition with the added complexity of searching through the image for candidate locations.
+
+Fast R-CNN is an improvement over R-CNN by the same author (2014). Each region of interest, a rectangular image patch defined by a bounding box, is scale normalized by image pyramids. The convolutional network can then process these object proposals (from a few thousand to as many as many thousands) through a single forward pass of a convolutional neural network. As an implementation detail, Fast R-CNN compresses fully connected layers with singular value decomposition for speed.
+
+YOLO is a single network that proposed bounding boxes and classes directly from images in a single evaluation. It was much faster than other detection methods at the time; in their experiments, the author ran different versions of YOLO at 45 frames per second and 155 frames per second.
+
+The SSD is a single-stage model that does away with the need for a separate object proposal generation, instead of opting for a discrete set of bounding boxes that are passed through a network. Predictions are then combined across different resolutions and bounding box locations.
+
+As a side note, Joseph Redmon published and maintained several incremental improvements of his YOLO architecture, but he has since left academia. The latest instantiation of the YOLO series by Bochkovskiy and others is in the same spirit, however, and is endorsed on Redmon's GitHub repository: https://github.com/AlexeyAB/darknet.
+
+YOLOv4 introduces several new network features to their CNN and they exhibit fast processing speed, while maintaining a level of accuracy significantly superior to YOLOv3 (**43.5% average precision (AP), for the MS COCO dataset at a real-time speed of about 65 frames per seconds on a Tesla V100 GPU**).
+
+# There's more...
+There are different ways of interacting with a web camera, and there are even some mobile apps that allow you to stream your camera feed, meaning you can plug it into applications that run on the cloud (for example, Colab notebooks) or on a server.
+
+One of the most common libraries is matplotlib, and it is also possible to live update a matplotlib figure from the web camera, as shown in the following code block:
+```python
+%matplotlib notebook
+import cv2
+import matplotlib.pyplot as plt
+
+def grab_frame(cap):
+    ret, frame = cap.read()
+    if not ret:
+        print('No image captured!')
+        exit()
+    return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+cap = cv2.VideoCapture(0)
+fig, ax = plt.subplots(1, 1)
+im = ax.imshow(grab_frame(cap))
+
+plt.tick_params(
+    top=False, bottom=False, left=False, right=False,
+    labelleft=False, labelbottom=False
+)
+plt.show()
+
+while True:
+    try:
+        im.set_data(grab_frame(cap))
+        fig.canvas.draw()
+    except KeyboardInterrupt:
+        cap.release()
+        break
+```
+# Colab
+```
+!pip install Opencv-python  keyboard opencv-contrib-python scipy  imutils scikit-image
+```
+* https://colab.research.google.com/github/robert0714/Packt-Artificial-Intelligence-with-Python-Cookbook-2020/blob/main/chapter08/video%20-%20matplotlib%20and%20recognition.ipynb
+* https://colab.research.google.com/github/robert0714/Packt-Artificial-Intelligence-with-Python-Cookbook-2020/blob/main/chapter08/Localizing_objects.ipynb
+* https://colab.research.google.com/github/robert0714/Packt-Artificial-Intelligence-with-Python-Cookbook-2020/blob/main/chapter08/Localizing%20objects%20in%20images.ipynb

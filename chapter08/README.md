@@ -125,6 +125,11 @@ If you cannot spot an error and the traceback of the error is not enough to find
    However, there's an error in the function, and I am sure the attentive reader will already have spotted it. Let's debug!
 2. Put this into a new cell:
    ```python
+   %debug
+   normalize(5, 0)
+   ```
+3. Execute the cell by pressing ``Ctrl + Enter`` or ``Alt + Enter``. You will get a debug prompt:
+   ```python
    > <iPython-input-11-a940a356f993>(2)normalize() 
         1 def normalize(x, norm=10): ----> 
         2   return x / norm 
